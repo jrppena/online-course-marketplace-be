@@ -18,6 +18,8 @@ Package manager is **npm** (Node 20+). Dev server runs on port 8080.
 
 Apply YAGNI, KISS, DRY, SOLID. Prefer the smallest change that fits the existing patterns below over adding abstraction. When unfamiliar with a library's current API (Prisma 7 driver adapters, Firebase Admin SDK, Express 5, tsyringe, Zod), consult Context7 before writing — versions here are recent and APIs have shifted.
 
+Code must be self-documenting: name functions, variables, and types so intent is clear without a comment. Default to no comments. Add one only when it captures a non-obvious WHY — a hidden constraint, a workaround, a subtlety a reader would otherwise miss — never to restate WHAT the code does.
+
 ## Architecture
 
 Scaffolded from [typescript-express-starter](https://github.com/ljlm0402/typescript-express-starter)'s `default` template (Express 5, tsyringe DI, Zod, pino), with the built-in email/password JWT auth removed. Two ideas do most of the work: an **identity/authorization split** and a **layered, DI-wired** request path.
