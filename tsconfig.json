@@ -20,7 +20,10 @@
       "@repositories/*": ["repositories/*"],
       "@routes/*": ["routes/*"],
       "@services/*": ["services/*"],
-      "@utils/*": ["utils/*"]
+      "@utils/*": ["utils/*"],
+      // classic moduleResolution can't read exports-map-only types; point straight at the .d.ts files
+      "@casl/ability": ["../node_modules/@casl/ability/dist/types/index.d.ts"],
+      "@casl/ability/extra": ["../node_modules/@casl/ability/dist/types/extra/index.d.ts"]
     },
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,

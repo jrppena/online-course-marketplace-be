@@ -1,3 +1,4 @@
+import { ForbiddenError } from '@casl/ability';
 import { NODE_ENV } from '@config/env';
 import { HttpException } from '@exceptions/http.exception';
 import {
@@ -26,6 +27,10 @@ const toHttpException = (err: unknown): HttpException => {
       value: (issue as { received?: unknown }).received || undefined,
     }));
     return new HttpException(400, 'Validation failed', details);
+  }
+
+  if (err instanceof ForbiddenError) {
+    return new HttpException(403, err.message);
   }
 
   const e = err as Error | undefined;

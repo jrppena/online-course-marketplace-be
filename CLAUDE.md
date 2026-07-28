@@ -31,8 +31,14 @@ Identity and app-profile are two different systems, bridged at the request bound
 - **Firebase** owns identity. This service never issues a token and never sees a password — `online-course-marketplace-fe`'s `src/lib/auth.tsx` talks to Firebase directly (`signInWithEmailAndPassword`, `createUserWithEmailAndPassword`, `signInWithPopup`) and attaches the resulting ID token as `Authorization: Bearer <token>`.
 - [src/middlewares/auth.middleware.ts](src/middlewares/auth.middleware.ts) is the **only** place that trusts a token: it calls `firebaseAuth.verifyIdToken()` ([src/config/firebase.ts](src/config/firebase.ts), Firebase Admin SDK) and attaches `{ uid, email, name }` to `req.user` ([src/interfaces/auth.interface.ts](src/interfaces/auth.interface.ts)). Never trust a client-supplied uid/email/role from anywhere else.
 - **Prisma/Neon** owns the app profile (`role`, `bio`, …). [src/services/users.service.ts](src/services/users.service.ts)'s `getOrCreateProfile` auto-provisions a `User` row (role `USER`) keyed by Firebase `uid` on first call — there is no signup endpoint. Name splitting (`displayName` → `firstName`/`lastName`) must stay in sync with the FE's MSW mock at `online-course-marketplace-fe/src/testing/mocks/handlers/users.ts`.
-- `role` is read only from the DB row, never from the Firebase token — that's what CASL on the FE authorizes against.
+- `role` is read only from the DB row, never from the Firebase token — that's what CASL authorizes against.
 - There is intentionally **no auth route**. A Firebase-backed one (custom claims, session cookies) can be added later if needed; a JWT-issuing one should not come back.
+
+### Authorization (CASL, backend is the source of truth)
+
+- [src/config/authorization.ts](src/config/authorization.ts)'s `defineRulesFor(user)` is the **only** place CASL rules are defined. The FE does not redefine them — `toUserResponse` ([src/dtos/users.dto.ts](src/dtos/users.dto.ts)) packs them with `packRules` and ships them on every `User` response; `online-course-marketplace-fe`'s `AppProvider` builds its ability from `unpackRules(user.rules)`. Change a rule once, here.
+- [src/middlewares/authorization.middleware.ts](src/middlewares/authorization.middleware.ts): `AbilityMiddleware` (after `AuthMiddleware`) resolves the profile and attaches `req.ability` + `req.profile`; `authorize(action, subject)` gates a route with `ForbiddenError.from(ability).throwUnlessCan(...)`, converted to a 403 by `ErrorMiddleware`.
+- **Gotcha:** `ability.can('read', 'User')` — a subject *type*, no instance — is `true` whenever *any* conditional `read User` rule exists (CASL can't evaluate `{ id }` without a record). Route-level `authorize()` should check `'manage'` for admin-only routes, not a conditional action. For record-level checks in services, wrap the Prisma row with the `subject()` helper: `ForbiddenError.from(req.ability).throwUnlessCan('update', subject('User', row))` — plain Prisma rows have no constructor CASL can key off of otherwise.
 
 ### Layering (Controller → Service → Repository, tsyringe DI)
 

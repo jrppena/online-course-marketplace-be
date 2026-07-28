@@ -19,4 +19,10 @@ export class UsersController {
 
     res.json({ data: toUserResponse(profile) });
   });
+
+  list: RequestHandler = asyncHandler(async (_req: Request, res: Response) => {
+    const users = await this.usersService.list();
+
+    res.json({ data: users.map(toUserResponse) });
+  });
 }

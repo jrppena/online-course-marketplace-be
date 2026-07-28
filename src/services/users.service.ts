@@ -32,4 +32,8 @@ export class UsersService {
       lastName,
     });
   }
+
+  async list(): Promise<User[]> {
+    return this.usersRepository.findAll();
+  }
 }

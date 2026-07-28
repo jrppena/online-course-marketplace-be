@@ -1,6 +1,7 @@
 import { UsersController } from '@controllers/users.controller';
 import type { Routes } from '@interfaces/routes.interface';
 import { AuthMiddleware } from '@middlewares/auth.middleware';
+import { AbilityMiddleware, authorize } from '@middlewares/authorization.middleware';
 import { Router } from 'express';
 import { container, injectable } from 'tsyringe';
 
@@ -16,6 +17,13 @@ export class UsersRoute implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.get('/me', AuthMiddleware, this.usersController.getMe);
+    this.router.get('/me', AuthMiddleware, AbilityMiddleware, this.usersController.getMe);
+    this.router.get(
+      '/',
+      AuthMiddleware,
+      AbilityMiddleware,
+      authorize('manage', 'User'),
+      this.usersController.list,
+    );
   }
 }
