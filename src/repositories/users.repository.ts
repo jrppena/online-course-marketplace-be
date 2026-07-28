@@ -17,6 +17,14 @@ export class UsersRepository {
     return prisma.user.create({ data });
   }
 
+  async upsert(data: NewProfileData): Promise<User> {
+    return prisma.user.upsert({
+      where: { id: data.id },
+      create: data,
+      update: {},
+    });
+  }
+
   async findAll(): Promise<User[]> {
     return prisma.user.findMany();
   }

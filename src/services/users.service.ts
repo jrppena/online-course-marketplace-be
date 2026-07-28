@@ -21,11 +21,8 @@ export class UsersService {
 
   // Firebase owns identity; this auto-provisions the app profile row on first sign-in.
   async getOrCreateProfile(claims: FirebaseAuthClaims): Promise<User> {
-    const existing = await this.usersRepository.findById(claims.uid);
-    if (existing) return existing;
-
     const { firstName, lastName } = splitName(claims.name, claims.email);
-    return this.usersRepository.create({
+    return this.usersRepository.upsert({
       id: claims.uid,
       email: claims.email ?? '',
       firstName,

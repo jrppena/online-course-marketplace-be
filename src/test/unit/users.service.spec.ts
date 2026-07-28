@@ -5,18 +5,20 @@ import type { User } from '@/generated/prisma/client';
 
 const makeRepo = (existing: User | null = null) =>
   ({
-    findById: vi.fn().mockResolvedValue(existing),
-    create: vi.fn().mockImplementation(async (data) => ({
-      ...data,
-      role: 'USER',
-      bio: '',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    })),
+    upsert: vi.fn().mockImplementation(
+      async (data) =>
+        existing ?? {
+          ...data,
+          role: 'USER',
+          bio: '',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+    ),
   }) as unknown as UsersRepository;
 
 describe('UsersService.getOrCreateProfile', () => {
-  it('returns the existing profile without creating one', async () => {
+  it('returns the existing profile without creating a new one', async () => {
     const existing = {
       id: 'uid-1',
       email: 'a@b.com',
@@ -33,7 +35,12 @@ describe('UsersService.getOrCreateProfile', () => {
     const result = await service.getOrCreateProfile({ uid: 'uid-1', email: 'a@b.com' });
 
     expect(result).toBe(existing);
-    expect(repo.create).not.toHaveBeenCalled();
+    expect(repo.upsert).toHaveBeenCalledWith({
+      id: 'uid-1',
+      email: 'a@b.com',
+      firstName: 'a@b.com',
+      lastName: 'User',
+    });
   });
 
   it('splits displayName into firstName/lastName on first sign-in', async () => {
@@ -42,7 +49,7 @@ describe('UsersService.getOrCreateProfile', () => {
 
     await service.getOrCreateProfile({ uid: 'uid-2', email: 'jane@doe.com', name: 'Jane Doe' });
 
-    expect(repo.create).toHaveBeenCalledWith({
+    expect(repo.upsert).toHaveBeenCalledWith({
       id: 'uid-2',
       email: 'jane@doe.com',
       firstName: 'Jane',
@@ -55,7 +62,7 @@ describe('UsersService.getOrCreateProfile', () => {
     const service = new UsersService(repo);
 
     await service.getOrCreateProfile({ uid: 'uid-3', email: 'solo@example.com' });
-    expect(repo.create).toHaveBeenCalledWith({
+    expect(repo.upsert).toHaveBeenCalledWith({
       id: 'uid-3',
       email: 'solo@example.com',
       firstName: 'solo@example.com',
@@ -63,7 +70,7 @@ describe('UsersService.getOrCreateProfile', () => {
     });
 
     await service.getOrCreateProfile({ uid: 'uid-4' });
-    expect(repo.create).toHaveBeenCalledWith({
+    expect(repo.upsert).toHaveBeenCalledWith({
       id: 'uid-4',
       email: '',
       firstName: 'New',
