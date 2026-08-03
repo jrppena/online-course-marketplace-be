@@ -19,17 +19,17 @@ npx prisma migrate dev --name init
 npm run dev
 ```
 
-The API listens on `http://localhost:8080`, prefixed at `/api` (`online-course-marketplace-fe`'s `VITE_APP_API_URL` expects exactly this).
+The API listens on `http://localhost:3000`, prefixed at `/api` (`online-course-marketplace-fe`'s `VITE_APP_API_URL` expects exactly this).
 
 ## Environment variables
 
 | Variable | Source |
 |---|---|
-| `PORT` | `8080` (the FE dev server owns 3000) |
+| `PORT` | `3000` (the FE dev server owns 5173) |
 | `DATABASE_URL` | Neon **pooled** connection string (`-pooler`, `sslmode=require`) — used by the running app |
 | `DIRECT_URL` | Neon **direct/unpooled** connection string — used by `prisma migrate`/`studio` |
 | `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY` | From the downloaded service account JSON. Must belong to the **same Firebase project** as the FE's `VITE_APP_FIREBASE_PROJECT_ID`, or token verification always fails |
-| `ORIGIN`, `CORS_ORIGINS`, `CREDENTIALS` | CORS allow-list — must include the FE dev origin (`http://localhost:3000`) |
+| `ORIGIN`, `CORS_ORIGINS`, `CREDENTIALS` | CORS allow-list — must include the FE dev origin (`http://localhost:5173`) |
 | `LOG_DIR`, `LOG_LEVEL` | pino logging |
 
 ## Commands

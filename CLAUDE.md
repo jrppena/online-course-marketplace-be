@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
-Package manager is **npm** (Node 20+). Dev server runs on port 8080.
+Package manager is **npm** (Node 20+). Dev server runs on port 3000.
 
 - `npm run dev` — nodemon + tsx, watches `src/**/*` and `.env`
 - `npm run build` — `tsc && tsc-alias` → `dist/`
@@ -62,6 +62,7 @@ Identity and app-profile are two different systems, bridged at the request bound
 
 - Path aliases (`@config/*`, `@controllers/*`, `@services/*`, `@repositories/*`, `@routes/*`, `@middlewares/*`, `@interfaces/*`, `@dtos/*`, `@exceptions/*`, `@utils/*`, `@/*`) are defined in `tsconfig.json` and mirrored in `vitest.config.ts` — keep both in sync when adding a new top-level `src/` folder.
 - `src/generated/prisma` is generated (gitignored); never hand-edit it. Regenerate with `npx prisma generate` after any `schema.prisma` change (also runs automatically via `postinstall`).
+- Every model's `id` is an internal UUIDv7 primary key (`@default(uuid(7)) @db.Uuid`) — never a natural/external key. External identifiers (e.g. `firebaseUid`) get their own `@unique` column instead.
 - Tests live under `src/test/unit` and `src/test/e2e`; mock `@config/firebase`'s `firebaseAuth` rather than hitting real Firebase in tests.
 
 ## Response style (caveman)

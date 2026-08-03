@@ -65,7 +65,7 @@ class App {
 
     // CORS 화이트리스트를 환경변수에서 관리
     const allowedOrigins =
-      CORS_ORIGIN_LIST.length > 0 ? CORS_ORIGIN_LIST : ['http://localhost:3000'];
+      CORS_ORIGIN_LIST.length > 0 ? CORS_ORIGIN_LIST : ['http://localhost:5173'];
 
     this.app.use(
       cors({
