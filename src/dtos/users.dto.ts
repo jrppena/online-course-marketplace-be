@@ -11,7 +11,7 @@ export interface UserResponse {
   firstName: string;
   lastName: string;
   email: string;
-  role: 'ADMIN' | 'USER';
+  role: 'ADMIN' | 'STUDENT';
   bio: string;
   rules: PackRule<RawRuleOf<AppAbility>>[];
 }

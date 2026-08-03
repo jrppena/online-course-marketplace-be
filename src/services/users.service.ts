@@ -23,7 +23,7 @@ export class UsersService {
   async getOrCreateProfile(claims: FirebaseAuthClaims): Promise<User> {
     const { firstName, lastName } = splitName(claims.name, claims.email);
     return this.usersRepository.upsert({
-      id: claims.uid,
+      firebaseUid: claims.uid,
       email: claims.email ?? '',
       firstName,
       lastName,

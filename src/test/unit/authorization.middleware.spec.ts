@@ -10,11 +10,12 @@ const { AbilityMiddleware, authorize } = await import('@middlewares/authorizatio
 
 const makeUser = (overrides: Partial<User> = {}): User =>
   ({
-    id: 'uid-1',
+    id: '018f5b3a-0000-7000-8000-000000000001',
+    firebaseUid: 'uid-1',
     email: 'a@b.com',
     firstName: 'A',
     lastName: 'B',
-    role: 'USER',
+    role: 'STUDENT',
     bio: '',
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -54,7 +55,7 @@ describe('authorize', () => {
   });
 
   it('calls next(err) when the ability forbids the action', () => {
-    const req = { ability: defineAbilityFor(makeUser({ role: 'USER' })) } as unknown as Request;
+    const req = { ability: defineAbilityFor(makeUser({ role: 'STUDENT' })) } as unknown as Request;
     const next = vi.fn() as unknown as NextFunction;
 
     authorize('manage', 'User')(req, {} as Response, next);

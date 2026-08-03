@@ -2,15 +2,15 @@ import { prisma } from '@config/prisma';
 import type { User } from '@/generated/prisma/client';
 
 export interface NewProfileData {
-  id: string; // Firebase uid
+  firebaseUid: string;
   email: string;
   firstName: string;
   lastName: string;
 }
 
 export class UsersRepository {
-  async findById(id: string): Promise<User | null> {
-    return prisma.user.findUnique({ where: { id } });
+  async findByFirebaseUid(firebaseUid: string): Promise<User | null> {
+    return prisma.user.findUnique({ where: { firebaseUid } });
   }
 
   async create(data: NewProfileData): Promise<User> {
@@ -18,10 +18,16 @@ export class UsersRepository {
   }
 
   async upsert(data: NewProfileData): Promise<User> {
+    const identityUpdate: Partial<NewProfileData> = {};
+    // splitName always yields a non-empty fallback, so this guard only omits empty email — assumes Firebase's name claim persists once set via updateProfile
+    if (data.email) identityUpdate.email = data.email;
+    if (data.firstName) identityUpdate.firstName = data.firstName;
+    if (data.lastName) identityUpdate.lastName = data.lastName;
+
     return prisma.user.upsert({
-      where: { id: data.id },
+      where: { firebaseUid: data.firebaseUid },
       create: data,
-      update: {},
+      update: identityUpdate,
     });
   }
 

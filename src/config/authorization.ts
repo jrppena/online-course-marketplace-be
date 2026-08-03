@@ -19,7 +19,7 @@ export const createAppAbility = createMongoAbility as CreateAbility<AppAbility>;
 
 // Source of truth for CASL rules — mirrored (never redefined) on the FE, which
 // builds its ability from the packed `rules` this backend ships in `GET /users/me`.
-// USER rules are intentionally granular (rather than one role check) so a future
+// STUDENT rules are intentionally granular (rather than one role check) so a future
 // role (e.g. an instructor) can be added here without touching call sites.
 export const defineRulesFor = (user: User): RawRuleOf<AppAbility>[] => {
   const { can, rules } = new AbilityBuilder<AppAbility>(createAppAbility);

@@ -1,15 +1,18 @@
 enum Role {
   ADMIN
-  USER
+  STUDENT
 }
 
 model User {
-  id        String   @id // Firebase uid
-  email     String   @unique
-  firstName String
-  lastName  String
-  role      Role     @default(USER)
-  bio       String   @default("")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(uuid(7)) @db.Uuid
+  firebaseUid String   @unique @map("firebase_uid")
+  email       String   @unique
+  firstName   String   @map("first_name")
+  lastName    String   @map("last_name")
+  role        Role     @default(STUDENT)
+  bio         String   @default("")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
 }
