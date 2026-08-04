@@ -12,6 +12,10 @@ import helmet from 'helmet';
 import hpp from 'hpp';
 import morgan from 'morgan';
 
+// `::ffff:127.0.0.1` is the IPv4-mapped IPv6 loopback Express reports for
+// local IPv4 clients when `trust proxy` is enabled.
+const LOOPBACK_ADDRESSES = ['127.0.0.1', '::1', '::ffff:127.0.0.1'] as const;
+
 class App {
   public app: express.Application;
   public env: string;
@@ -57,7 +61,7 @@ class App {
         legacyHeaders: false,
         skip: (req) =>
           this.env !== 'production' ||
-          ['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(req.ip ?? ''),
+          LOOPBACK_ADDRESSES.includes((req.ip ?? '') as (typeof LOOPBACK_ADDRESSES)[number]),
       }),
     );
 

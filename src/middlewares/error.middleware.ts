@@ -61,15 +61,14 @@ export const ErrorMiddleware = (
   if (res.headersSent) return _next(httpErr);
 
   const stack = extractStack(httpErr);
-  logger.error(
-    `[${req.method}] ${req.originalUrl} | ${status} | ${message}${stack ? `\n${stack}` : ''}`,
-  );
+  const stackSuffix = stack ? `\n${stack}` : '';
+  logger.error(`[${req.method}] ${req.originalUrl} | ${status} | ${message}${stackSuffix}`);
 
   // FE (src/lib/api-client.ts) reads `response.data.message` directly — keep this flat.
   const errorResponse: StandardErrorResponse = { message };
 
   const maybeDetails = (httpErr as HttpExceptionWithData).data;
-  if (typeof maybeDetails !== 'undefined') {
+  if (maybeDetails !== undefined) {
     errorResponse.details = maybeDetails;
   }
 
