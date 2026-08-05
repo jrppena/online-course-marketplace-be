@@ -1,0 +1,10 @@
+model Track {
+  id         String     @id @default(uuid(7)) @db.Uuid
+  name       String     @unique
+  slug       String     @unique
+  createdAt  DateTime   @default(now()) @map("created_at")
+  updatedAt  DateTime   @updatedAt @map("updated_at")
+  categories Category[]
+
+  @@map("tracks")
+}

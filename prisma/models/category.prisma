@@ -1,0 +1,14 @@
+model Category {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  trackId   String   @map("track_id") @db.Uuid
+  name      String
+  slug      String
+  visible   Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  track     Track    @relation(fields: [trackId], references: [id], onDelete: Restrict)
+  courses   Course[]
+
+  @@unique([trackId, slug])
+  @@map("categories")
+}

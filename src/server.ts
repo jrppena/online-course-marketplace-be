@@ -1,6 +1,8 @@
 import 'reflect-metadata';
 import '@config/env';
 import { setupContainer } from '@config/container';
+import { CategoriesRoute } from '@routes/categories.route';
+import { TracksRoute } from '@routes/tracks.route';
 import { UsersRoute } from '@routes/users.route';
 import { logger } from '@utils/logger';
 import { container } from 'tsyringe';
@@ -13,7 +15,11 @@ import App from '@/app';
 setupContainer();
 
 // 라우트 인스턴스 생성
-const routes = [container.resolve(UsersRoute)];
+const routes = [
+  container.resolve(UsersRoute),
+  container.resolve(TracksRoute),
+  container.resolve(CategoriesRoute),
+];
 
 // 앱 인스턴스 생성
 const appInstance = new App(routes);
