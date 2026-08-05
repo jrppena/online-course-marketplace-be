@@ -3,7 +3,16 @@ import { AbilityBuilder, createMongoAbility } from '@casl/ability';
 import type { User } from '@/generated/prisma/client';
 
 export const actions = ['manage', 'create', 'read', 'update', 'delete'] as const;
-export const subjects = ['Course', 'Lesson', 'Enrollment', 'Review', 'User', 'all'] as const;
+export const subjects = [
+  'Course',
+  'Lesson',
+  'Enrollment',
+  'Review',
+  'User',
+  'Track',
+  'Category',
+  'all',
+] as const;
 
 export type Actions = (typeof actions)[number];
 
