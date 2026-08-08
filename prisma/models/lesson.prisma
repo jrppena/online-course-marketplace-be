@@ -1,0 +1,21 @@
+enum LessonType {
+  VIDEO
+  READING
+}
+
+model Lesson {
+  id          String     @id @default(uuid(7)) @db.Uuid
+  moduleId    String     @map("module_id") @db.Uuid
+  label       String     @default("")
+  title       String
+  type        LessonType
+  meta        String     @default("")
+  freePreview Boolean    @default(false) @map("free_preview")
+  rank        String
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+  module      Module     @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  @@index([moduleId])
+  @@map("lessons")
+}
