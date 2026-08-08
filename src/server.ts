@@ -2,6 +2,9 @@ import 'reflect-metadata';
 import '@config/env';
 import { setupContainer } from '@config/container';
 import { CategoriesRoute } from '@routes/categories.route';
+import { CoursesRoute } from '@routes/courses.route';
+import { LessonsRoute } from '@routes/lessons.route';
+import { ModulesRoute } from '@routes/modules.route';
 import { TracksRoute } from '@routes/tracks.route';
 import { UsersRoute } from '@routes/users.route';
 import { logger } from '@utils/logger';
@@ -19,6 +22,9 @@ const routes = [
   container.resolve(UsersRoute),
   container.resolve(TracksRoute),
   container.resolve(CategoriesRoute),
+  container.resolve(CoursesRoute),
+  container.resolve(ModulesRoute),
+  container.resolve(LessonsRoute),
 ];
 
 // 앱 인스턴스 생성
