@@ -1,0 +1,14 @@
+model Module {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  courseId  String   @map("course_id") @db.Uuid
+  title     String
+  summary   String   @default("")
+  rank      String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons   Lesson[]
+
+  @@index([courseId])
+  @@map("modules")
+}
